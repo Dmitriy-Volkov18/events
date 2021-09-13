@@ -26,12 +26,12 @@ const ActivityDetails = () => {
     return (
         <Grid>
             <Grid.Column width={10}>
-                <ActivityDetailedHeader activity={activity}></ActivityDetailedHeader>
-                <ActivityDetailedInfo activity={activity}></ActivityDetailedInfo>
-                <ActivityDetailedChat></ActivityDetailedChat>
+                <ActivityDetailedHeader activity={activity} />
+                <ActivityDetailedInfo activity={activity} />
+                <ActivityDetailedChat />
             </Grid.Column>
             <Grid.Column width={6}>
-            <ActivityDetailedSidebar></ActivityDetailedSidebar>
+            <ActivityDetailedSidebar activity={activity} />
             </Grid.Column>
         </Grid>
     )
