@@ -5,6 +5,9 @@ export interface Profile{
     dispayName: string,
     image?: string,
     bio?: string,
+    followersCount: number,
+    followingCount: number,
+    following: boolean,
     photos?: Photo[]
 }
 
