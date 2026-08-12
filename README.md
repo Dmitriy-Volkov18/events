@@ -61,17 +61,21 @@ TOKEN_KEY=your_token_key
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+```
 
 2. Запустить проект
 
 Из корня проекта выполнить:
 
+```
 docker compose up -d --build
 
+```
 После запуска приложение будет доступно по адресу:
 
+```
 http://localhost
-
+```
 Production
 
 Для production подготовлен отдельный docker-compose.prod.yml.
@@ -83,7 +87,8 @@ ghcr.io/<owner>/events-frontend
 
 На сервере запуск выполняется через:
 
+```
 docker compose -f docker-compose.prod.yml pull
 docker compose -f docker-compose.prod.yml up -d
-
+```
 Полноценный автоматический deployment на сервер будет настроен после добавления production-сервера.
