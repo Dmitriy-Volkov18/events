@@ -13,7 +13,7 @@ namespace Application.Photos
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public string Id { get; set; }
+            public string Id { get; set; } = null!;
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -28,21 +28,30 @@ namespace Application.Photos
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+                var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername(), cancellationToken);
 
-                if (user == null) return null;
+                if (user == null)
+                {
+                    return Result<Unit>.Failure("User not found");
+                }
 
                 var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
 
-                if (photo == null) return null;
+                if (photo == null)
+                {
+                    return Result<Unit>.Failure("Photo not found");
+                }
 
                 var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+
                 if (currentMain != null) currentMain.IsMain = false;
+
                 photo.IsMain = true;
 
-                var success = await _context.SaveChangesAsync() > 0;
+                var success = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                 if (success) return Result<Unit>.Success(Unit.Value);
+
                 return Result<Unit>.Failure("Problem setting main photo");
             }
         }

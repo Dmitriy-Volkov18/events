@@ -43,6 +43,7 @@ public static class IdentityServiceExtensions
                 {
                     var accessToken = context.Request.Query["access_token"];
                     var path = context.HttpContext.Request.Path;
+
                     if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
                     {
                         context.Token = accessToken;
@@ -52,13 +53,13 @@ public static class IdentityServiceExtensions
                 }
             };
         });
-        services.AddAuthorization(opt =>
-        {
-            opt.AddPolicy("isActivityHost", policy =>
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy("isActivityHost", policy =>
             {
                 policy.Requirements.Add(new IHostRequirement());
             });
-        });
+
         services.AddTransient<IAuthorizationHandler, IHostRequirementHandler>();
         services.AddScoped<TokenService>();
 

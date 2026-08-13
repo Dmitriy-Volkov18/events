@@ -16,7 +16,7 @@ namespace Application.Comments
     {
         public class Command : IRequest<Result<CommentDto>>
         {
-            public string Body { get; set; }
+            public string Body { get; set; } = null!;
             public Guid ActivityId { get; set; }
         }
 
@@ -42,11 +42,20 @@ namespace Application.Comments
 
             public async Task<Result<CommentDto>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.ActivityId);
-                if (activity == null) return null;
+                var activity = await _context.Activities.FindAsync(request.ActivityId, cancellationToken);
+
+                if (activity == null)
+                {
+                    return Result<CommentDto>.Failure("Activity not found");
+                }
 
                 var user = await _context.Users.Include(p => p.Photos)
-                .SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+                    .SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+
+                if (user == null)
+                {
+                    return Result<CommentDto>.Failure("User not found");
+                }
 
                 var comment = new Comment
                 {
@@ -57,7 +66,7 @@ namespace Application.Comments
 
                 activity.Comments.Add(comment);
 
-                var success = await _context.SaveChangesAsync() > 0;
+                var success = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                 if (success) return Result<CommentDto>.Success(_mapper.Map<CommentDto>(comment));
 

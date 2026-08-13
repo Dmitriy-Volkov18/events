@@ -13,7 +13,7 @@ namespace Application.Followers
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public string TargetUsername { get; set; }
+            public string TargetUsername { get; set; } = null!;
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -28,13 +28,22 @@ namespace Application.Followers
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var observer = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+                var observer = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername(), cancellationToken);
 
-                var target = await _context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
+                if (observer == null)
+                {
+                    return Result<Unit>.Failure("Observer not found");
+                }
 
-                if (target == null) return null;
+                var target = await _context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername, cancellationToken);
 
-                var following = await _context.UserFollowings.FindAsync(observer.Id, target.Id);
+                if (target == null)
+                {
+                    return Result<Unit>.Failure("Target user not found");
+                }
+
+                var following = await _context.UserFollowings.FindAsync(observer.Id, target.Id, cancellationToken);
+
                 if (following == null)
                 {
                     following = new UserFollowing
@@ -50,7 +59,7 @@ namespace Application.Followers
                     _context.UserFollowings.Remove(following);
                 }
 
-                var success = await _context.SaveChangesAsync() > 0;
+                var success = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                 if (success) return Result<Unit>.Success(Unit.Value);
 

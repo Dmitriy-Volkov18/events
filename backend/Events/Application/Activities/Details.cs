@@ -32,7 +32,15 @@ namespace Application.Activities
 
             public async Task<Result<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() }).FirstOrDefaultAsync(x => x.Id == request.Id);
+                var activity = await _context.Activities
+                    .ProjectTo<ActivityDto>(
+                        _mapper.ConfigurationProvider,
+                        new { currentUsername = _userAccessor.GetUsername() }).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+
+                if (activity == null)
+                {
+                    return Result<ActivityDto>.Failure("Activity not found");
+                }
 
                 return Result<ActivityDto>.Success(activity);
             }

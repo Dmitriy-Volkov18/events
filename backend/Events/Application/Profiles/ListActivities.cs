@@ -16,8 +16,8 @@ namespace Application.Profiles
     {
         public class Query : IRequest<Result<List<UserActivityDto>>>
         {
-            public string Username { get; set; }
-            public string Predicate { get; set; }
+            public string Username { get; set; } = null!;
+            public string Predicate { get; set; } = null!;
         }
 
         public class Handler : IRequestHandler<Query, Result<List<UserActivityDto>>>
@@ -33,10 +33,10 @@ namespace Application.Profiles
             public async Task<Result<List<UserActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var query = _context.ActivityAttendees
-                .Where(u => u.AppUser.UserName == request.Username)
-                .OrderBy(a => a.Activity.Date)
-                .ProjectTo<UserActivityDto>(_mapper.ConfigurationProvider)
-                .AsQueryable();
+                    .Where(u => u.AppUser.UserName == request.Username)
+                    .OrderBy(a => a.Activity.Date)
+                    .ProjectTo<UserActivityDto>(_mapper.ConfigurationProvider)
+                    .AsQueryable();
 
                 query = request.Predicate switch
                 {
@@ -45,7 +45,7 @@ namespace Application.Profiles
                     _ => query.Where(a => a.Date >= DateTime.Now)
                 };
 
-                var activities = await query.ToListAsync();
+                var activities = await query.ToListAsync(cancellationToken);
 
                 return Result<List<UserActivityDto>>.Success(activities);
             }

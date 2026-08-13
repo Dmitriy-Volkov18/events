@@ -25,14 +25,21 @@ namespace Application.Activities
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+                var activity = await _context.Activities.FindAsync(
+                    [request.Id],
+                    cancellationToken);
 
-                // if(activity == null) return null;
+                if (activity == null)
+                {
+                    return Result<Unit>.Failure("Activity not found");
+                }
+
                 _context.Remove(activity);
 
-                var result = await _context.SaveChangesAsync() > 0;
+                var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                 if (!result) return Result<Unit>.Failure("Failed to delete the activity");
+
                 return Result<Unit>.Success(Unit.Value);
             }
         }

@@ -30,26 +30,40 @@ namespace Application.Activities
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.Include(a => a.Attendees)
-                .ThenInclude(u => u.AppUser)
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
+                var activity = await _context.Activities
+                    .Include(a => a.Attendees)
+                    .ThenInclude(u => u.AppUser)
+                    .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-                if (activity == null) return null;
+                if (activity == null)
+                {
+                    return Result<Unit>.Failure("Activity not found");
+                }
 
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername(), cancellationToken);
 
-                if (user == null) return null;
+                if (user == null)
+                {
+                    return Result<Unit>.Failure("User not found");
+                }
 
-                var hostUsername = activity.Attendees.FirstOrDefault(x => x.isHost).AppUser.UserName;
+                var host = activity.Attendees
+                    .FirstOrDefault(x => x.isHost);
 
-                var attendance = activity.Attendees.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
+                if (host == null)
+                {
+                    return Result<Unit>.Failure("Activity host not found");
+                }
 
-                if (attendance != null && hostUsername == user.UserName)
+                var attendance = activity.Attendees
+                    .FirstOrDefault(x => x.AppUserId == user.Id);
+
+                if (attendance != null && host.AppUserId == user.Id)
                 {
                     activity.isCancelled = !activity.isCancelled;
                 }
 
-                if (attendance != null && hostUsername != user.UserName)
+                if (attendance != null && host.AppUserId != user.Id)
                 {
                     activity.Attendees.Remove(attendance);
                 }
@@ -66,7 +80,7 @@ namespace Application.Activities
                     activity.Attendees.Add(attendance);
                 }
 
-                var result = await _context.SaveChangesAsync() > 0;
+                var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                 return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem updating attendance");
             }

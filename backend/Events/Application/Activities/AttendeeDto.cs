@@ -2,10 +2,10 @@ namespace Application.Activities
 {
     public class AttendeeDto
     {
-        public string Username { get; set; }
-        public string DispayName { get; set; }
-        public string Bio { get; set; }
-        public string Image { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string DispayName { get; set; } = string.Empty;
+        public string Bio { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
         public bool Following { get; set; }
         public int FollowersCount { get; set; }
         public int FollowingCount { get; set; }

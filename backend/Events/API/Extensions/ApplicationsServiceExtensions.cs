@@ -14,8 +14,6 @@ public static class ApplicationsServiceExtensions
     {
         services.AddDbContext<DataContext>(opt =>
         {
-            //opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
-            //opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
             opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
         });
 
