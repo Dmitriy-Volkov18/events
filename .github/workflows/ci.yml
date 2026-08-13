@@ -93,7 +93,7 @@ jobs:
         run: echo "IMAGE_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
       - name: Build and push backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./backend/Events
           file: ./backend/Events/Dockerfile
@@ -103,7 +103,7 @@ jobs:
             ghcr.io/${{ env.IMAGE_OWNER }}/events-backend:${{ github.sha }}
 
       - name: Build and push frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./client-app
           file: ./client-app/Dockerfile
