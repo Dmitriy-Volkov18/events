@@ -29,6 +29,9 @@ jobs:
       - name: Restore
         run: dotnet restore Events.slnx
 
+      - name: Format check
+        run: dotnet format Events.slnx --verify-no-changes
+
       - name: Build
         run: dotnet build Events.slnx --configuration Release --no-restore
 

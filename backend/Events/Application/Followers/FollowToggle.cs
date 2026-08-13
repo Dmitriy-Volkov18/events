@@ -32,23 +32,27 @@ namespace Application.Followers
 
                 var target = await _context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
 
-                if(target == null) return null;
+                if (target == null) return null;
 
                 var following = await _context.UserFollowings.FindAsync(observer.Id, target.Id);
-                if(following == null){
-                    following = new UserFollowing{
+                if (following == null)
+                {
+                    following = new UserFollowing
+                    {
                         Observer = observer,
                         Target = target
                     };
 
                     _context.UserFollowings.Add(following);
-                }else{
+                }
+                else
+                {
                     _context.UserFollowings.Remove(following);
                 }
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if(success) return Result<Unit>.Success(Unit.Value);
+                if (success) return Result<Unit>.Success(Unit.Value);
 
                 return Result<Unit>.Failure("Failed to update following");
             }

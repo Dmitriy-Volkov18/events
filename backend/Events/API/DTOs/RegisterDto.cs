@@ -6,7 +6,7 @@ namespace API.DTOs
     {
         [Required]
         public string DispayName { get; set; }
-        
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }

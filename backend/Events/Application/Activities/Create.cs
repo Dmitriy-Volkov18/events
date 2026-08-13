@@ -39,7 +39,8 @@ namespace Application.Activities
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
-                var attendee = new ActivityAttendee{
+                var attendee = new ActivityAttendee
+                {
                     AppUser = user,
                     Activity = request.Activity,
                     isHost = true
@@ -49,7 +50,7 @@ namespace Application.Activities
                 _context.Activities.Add(request.Activity);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if(!result) return Result<Unit>.Failure("Failed to create activity");
+                if (!result) return Result<Unit>.Failure("Failed to create activity");
 
                 return Result<Unit>.Success(Unit.Value);
             }

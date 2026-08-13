@@ -38,13 +38,15 @@ namespace Application.Activities
                 var query = _context.Activities
                 .Where(d => d.Date >= request.Params.StartDate)
                 .OrderBy(d => d.Date)
-                .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new {currentUsername = _userAccessor.GetUsername()}).AsQueryable();
+                .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() }).AsQueryable();
 
-                if(request.Params.IsGoing && !request.Params.IsHost){
+                if (request.Params.IsGoing && !request.Params.IsHost)
+                {
                     query = query.Where(x => x.Attendees.Any(a => a.Username == _userAccessor.GetUsername()));
                 }
 
-                if(request.Params.IsHost && !request.Params.IsGoing){
+                if (request.Params.IsHost && !request.Params.IsGoing)
+                {
                     query = query.Where(x => x.HostUsername == _userAccessor.GetUsername());
                 }
                 return Result<PagedList<ActivityDto>>.Success(await PagedList<ActivityDto>.CreateAsync(query, request.Params.PageNumber, request.Params.PageSize));

@@ -28,7 +28,7 @@ namespace Infrastructure.Security
         {
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if(userId == null) return Task.CompletedTask;
+            if (userId == null) return Task.CompletedTask;
 
             var activityId = Guid.Parse(
                 _httpContextAccessor.HttpContext?
@@ -41,11 +41,11 @@ namespace Infrastructure.Security
 
             var attendee = _dbContext.ActivityAttendees.AsNoTracking().SingleOrDefaultAsync(x => x.AppUserId == userId && x.ActivityId == activityId).Result;
 
-            if(attendee == null) return Task.CompletedTask;
+            if (attendee == null) return Task.CompletedTask;
 
-            if(attendee.isHost) context.Succeed(requirement);
+            if (attendee.isHost) context.Succeed(requirement);
 
-            return Task.CompletedTask; 
+            return Task.CompletedTask;
         }
     }
 }

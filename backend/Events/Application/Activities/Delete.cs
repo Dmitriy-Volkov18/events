@@ -32,7 +32,7 @@ namespace Application.Activities
 
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if(!result) return Result<Unit>.Failure("Failed to delete the activity");
+                if (!result) return Result<Unit>.Failure("Failed to delete the activity");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

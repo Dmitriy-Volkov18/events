@@ -16,10 +16,11 @@ namespace Persistence
         public DbSet<Comment> Comments { get; set; }
         public DbSet<UserFollowing> UserFollowings { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder){
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
             base.OnModelCreating(builder);
 
-            builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new {aa.AppUserId, aa.ActivityId}));
+            builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new { aa.AppUserId, aa.ActivityId }));
 
             builder.Entity<ActivityAttendee>()
             .HasOne(u => u.AppUser)
@@ -31,13 +32,14 @@ namespace Persistence
             .WithMany(a => a.Attendees)
             .HasForeignKey(aa => aa.ActivityId);
 
-            builder.Entity<Comment>()   
+            builder.Entity<Comment>()
                 .HasOne(a => a.Activity)
                 .WithMany(c => c.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<UserFollowing>(b => {
-                b.HasKey(k => new {k.ObserverId, k.TargetId});
+            builder.Entity<UserFollowing>(b =>
+            {
+                b.HasKey(k => new { k.ObserverId, k.TargetId });
 
                 b.Property(u => u.ObserverId).HasMaxLength(450);
                 b.Property(u => u.TargetId).HasMaxLength(450);
@@ -53,7 +55,7 @@ namespace Persistence
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-           
+
         }
     }
 
