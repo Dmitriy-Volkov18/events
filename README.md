@@ -68,7 +68,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 Из корня проекта выполнить:
 
 ```
-docker compose up -d --build
+docker compose -f compose.yml -f compose.dev.yml up -d --build
 
 ```
 После запуска приложение будет доступно по адресу:
@@ -78,7 +78,7 @@ http://localhost
 ```
 Production
 
-Для production подготовлен отдельный docker-compose.prod.yml.
+Для production подготовлен отдельный compose.prod.yml.
 
 Production-версия использует готовые Docker-образы из GitHub Container Registry вместо локальной сборки:
 
@@ -88,7 +88,8 @@ ghcr.io/<owner>/events-frontend
 На сервере запуск выполняется через:
 
 ```
-docker compose -f docker-compose.prod.yml pull
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f compose.yml -f compose.prod.yml pull
+
+docker compose -f compose.yml -f compose.prod.yml up -d
 ```
 Полноценный автоматический deployment на сервер будет настроен после добавления production-сервера.
