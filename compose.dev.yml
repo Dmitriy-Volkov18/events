@@ -1,0 +1,22 @@
+services:
+
+  sqlserver:
+    container_name: events-sqlserver
+
+
+  backend:
+    build:
+      context: ./backend/Events
+      dockerfile: Dockerfile
+
+    container_name: events-backend
+
+
+  frontend:
+    build:
+      context: ./client-app
+      dockerfile: Dockerfile
+      args:
+        NGINX_CONF: nginx.dev.conf
+
+    container_name: events-frontend

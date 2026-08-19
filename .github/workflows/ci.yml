@@ -108,6 +108,8 @@ jobs:
           context: ./client-app
           file: ./client-app/Dockerfile
           push: true
+          build-args: |
+            NGINX_CONF=nginx.prod.conf
           tags: |
             ghcr.io/${{ env.IMAGE_OWNER }}/events-frontend:latest
             ghcr.io/${{ env.IMAGE_OWNER }}/events-frontend:${{ github.sha }}
