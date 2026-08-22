@@ -1,3 +1,9 @@
+import UserStore from './userStore';
+import agent from '../api/agent';
+import { navigate } from '../router';
+import { User } from '../models/user';
+import { store } from './store';
+
 jest.mock('./store', () => ({
     store: {
         commonStore: {
@@ -22,12 +28,6 @@ jest.mock('../api/agent', () => ({
 jest.mock('../router', () => ({
     navigate: jest.fn(),
 }));
-
-import UserStore from './userStore';
-import agent from '../api/agent';
-import { navigate } from '../router';
-import { User } from '../models/user';
-import { store } from './store';
 
 describe('UserStore.register', () => {
     let userStore: UserStore;

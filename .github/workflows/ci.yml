@@ -68,6 +68,9 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Tests
+        run: npm test -- --watchAll=false
+
       - name: Build
         run: npm run build
 
