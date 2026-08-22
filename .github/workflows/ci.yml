@@ -36,6 +36,9 @@ jobs:
       - name: Build
         run: dotnet build Events.slnx --configuration Release --no-restore
 
+      - name: Test
+        run: dotnet test Events.slnx --configuration Release --no-build
+
 
   frontend:
     name: Frontend
